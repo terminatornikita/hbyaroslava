@@ -1,0 +1,1108 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>С днём рождения, любимая</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Montserrat:wght@200;300;400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --paper: #faf8f5;
+            --ink: #2c2420;
+            --gold: #c9a96e;
+            --rose: #d4a5a5;
+            --deep-rose: #b08080;
+            --shadow: rgba(44, 36, 32, 0.15);
+            --birthday-pink: #f8e8e8;
+            --birthday-gold: #e8d5a3;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        html, body { overflow-x: hidden; width: 100%; }
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background-color: var(--paper);
+            background-image: radial-gradient(circle, rgba(201,169,110,0.035) 1px, transparent 1px);
+            background-size: 28px 28px;
+            color: var(--ink);
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* Виньетка — собирает сайт в центр, убирает ощущение бесконечного белого поля */
+        body::after {
+            content: '';
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none;
+            z-index: 2;
+            background: radial-gradient(ellipse at center, transparent 60%, rgba(44,36,32,0.035) 100%);
+        }
+
+        /* ===== SIDE BORDERS ===== */
+        .side-border {
+            position: fixed;
+            top: 0;
+            width: 60px;
+            height: 100vh;
+            pointer-events: none;
+            z-index: 4;
+            background-image: 
+                linear-gradient(to bottom, transparent 0%, var(--gold) 10%, var(--gold) 90%, transparent 100%),
+                radial-gradient(circle, rgba(201,169,110,0.6) 1.5px, transparent 1.5px);
+            background-size: 1px 80%, 20px 40px;
+            background-position: center, center;
+            background-repeat: no-repeat, repeat-y;
+            opacity: 0.30;
+        }
+        .side-left { left: 0; }
+        .side-right { right: 0; }
+
+        @media (max-width: 768px) {
+            .side-border { display: none; }
+        }
+
+        /* ===== MUSIC BUTTON ===== */
+        .music-btn {
+            position: fixed; bottom: 20px; right: 20px; z-index: 9996;
+            width: 44px; height: 44px; border-radius: 50%;
+            border: 1px solid rgba(201,169,110,0.4); background: rgba(255,255,255,0.85);
+            backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+            cursor: pointer; display: flex; align-items: center; justify-content: center;
+            font-size: 1.1rem; color: var(--gold); transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+        }
+        .music-btn:hover { transform: scale(1.1); border-color: var(--gold); }
+        .music-btn.playing { animation: musicPulse 2s ease-in-out infinite; }
+        @keyframes musicPulse {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(201,169,110,0.3); }
+            50% { box-shadow: 0 0 0 12px rgba(201,169,110,0); }
+        }
+
+            /* ===== COMPLIMENTS MARQUEE ===== */
+        .compliments-bg {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
+            opacity: 1; /* было 0.3 — стало заметнее */
+        }
+        .compliment-row {
+            position: absolute; left: 0;
+            display: flex; white-space: nowrap; will-change: transform;
+            width: max-content;
+        }
+        .compliment-row-1 { top: 5%; animation: marqueeLeft 90s linear infinite; }
+        .compliment-row-2 { top: 14%; animation: marqueeRight 120s linear infinite; }
+        .compliment-row-3 { top: 23%; animation: marqueeLeft 75s linear infinite; }
+        .compliment-row-4 { top: 32%; animation: marqueeRight 105s linear infinite; }
+        .compliment-row-5 { top: 41%; animation: marqueeLeft 85s linear infinite; }
+        .compliment-row-6 { top: 50%; animation: marqueeRight 115s linear infinite; }
+        .compliment-row-7 { top: 59%; animation: marqueeLeft 95s linear infinite; }
+        .compliment-row-8 { top: 68%; animation: marqueeRight 80s linear infinite; }
+        .compliment-row-9 { top: 77%; animation: marqueeLeft 110s linear infinite; }
+        .compliment-row-10 { top: 86%; animation: marqueeRight 70s linear infinite; }
+        .compliment-text {
+            font-family: 'Cormorant Garamond', serif;
+            font-style: italic;
+            font-weight: 400; /* чуть жирнее, лучше читается */
+            font-size: clamp(0.9rem, 1.8vw, 1.25rem); /* чуть крупнее */
+            color: rgba(201, 169, 110, 0.3); /* было 0.45 — стало ярче */
+            padding: 0.35rem 2.2rem;
+            user-select: none;
+            letter-spacing: 0.04em;
+            text-shadow: 0 0 16px rgba(201, 169, 110, 0.25); /* мягкое золотое свечение */
+        }
+        @keyframes marqueeLeft {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+        @keyframes marqueeRight {
+            0% { transform: translateX(-50%); }
+            100% { transform: translateX(0); }
+        }
+
+        #confettiCanvas {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none; z-index: 9999;
+        }
+        .noise {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none; z-index: 9998; opacity: 0.03;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+        }
+        .trail {
+            position: fixed; width: 6px; height: 6px; border-radius: 50%;
+            background: radial-gradient(circle, var(--gold) 0%, transparent 70%);
+            pointer-events: none; z-index: 9997; opacity: 0;
+        }
+
+        /* Floating Particles Background */
+        .particles-bg {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none; z-index: 0; overflow: hidden;
+        }
+        .particle {
+            position: absolute; border-radius: 50%; background: var(--gold);
+            opacity: 0.15; animation: particleFloat linear infinite;
+        }
+        @keyframes particleFloat {
+            0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+            10% { opacity: 0.15; } 90% { opacity: 0.15; }
+            100% { transform: translateY(-100px) rotate(360deg); opacity: 0; }
+        }
+
+        /* Gradient Orbs */
+        .orb {
+            position: fixed; border-radius: 50%; filter: blur(80px);
+            pointer-events: none; z-index: 0; opacity: 0.4;
+            animation: orbFloat 15s ease-in-out infinite;
+        }
+        .orb-1 { width: 400px; height: 400px; background: radial-gradient(circle, rgba(201,169,110,0.3), transparent 70%); top: 10%; left: -100px; animation-delay: 0s; }
+        .orb-2 { width: 300px; height: 300px; background: radial-gradient(circle, rgba(212,165,165,0.25), transparent 70%); top: 50%; right: -100px; animation-delay: -5s; }
+        .orb-3 { width: 350px; height: 350px; background: radial-gradient(circle, rgba(232,213,163,0.2), transparent 70%); bottom: 10%; left: 30%; animation-delay: -10s; }
+        @keyframes orbFloat {
+            0%, 100% { transform: translate(0,0) scale(1); }
+            33% { transform: translate(30px,-20px) scale(1.1); }
+            66% { transform: translate(-20px,15px) scale(0.9); }
+        }
+
+        /* ===== HERO ===== */
+        .hero {
+            min-height: 100vh; display: flex; flex-direction: column;
+            align-items: center; justify-content: center; position: relative;
+            z-index: 3; background: linear-gradient(135deg, #faf8f5 0%, #f5f0eb 50%, #faf8f5 100%);
+            width: 100%; padding: 1.5rem 1rem;
+        }
+        .hero-content { text-align: center; position: relative; z-index: 3; width: 100%; max-width: 900px; }
+        .hero h1 {
+            font-family: 'Cormorant Garamond', serif; font-size: clamp(2.2rem, 5vw, 4.5rem);
+            font-weight: 300; font-style: italic; color: var(--ink);
+            margin-bottom: 0.3rem; opacity: 0; transform: translateY(30px);
+            animation: fadeUp 1.5s ease forwards; word-wrap: break-word;
+        }
+        .hero .subtitle {
+            font-family: 'Cormorant Garamond', serif; font-size: clamp(1.1rem, 2.5vw, 1.6rem);
+            font-weight: 300; color: var(--deep-rose); margin-bottom: 2rem;
+            opacity: 0; animation: fadeUp 1.5s ease 0.3s forwards;
+        }
+        .typing-text {
+            font-family: 'Cormorant Garamond', serif; 
+            font-size: clamp(0.9rem, 2vw, 1.2rem);
+            font-style: italic; 
+            color: var(--gold); 
+            margin-bottom: 2rem;
+            height: 1.8em;        /* ровно одна строка */
+            line-height: 1.8;
+            display: block;
+            text-align: center;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;  /* если вылезет — покажет многоточие, но блок не вырастет */
+            opacity: 0; 
+            animation: fadeUp 1.5s ease 0.6s forwards;
+            /* Фиксируем ширину на 100% контейнера, чтобы не толкать родителя */
+            width: 100%;
+            max-width: 100%;
+            position: relative;
+        }
+        .typing-text::after { content: '|'; animation: blink 1s infinite; color: var(--gold); }
+        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+
+        /* ===== TIMER ===== */
+        .timer-container {
+            background: rgba(255,255,255,0.6); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(201,169,110,0.2); border-radius: 24px;
+            padding: 1.5rem 1.2rem; margin: 1.5rem auto; max-width: 650px; width: 100%;
+            box-shadow: 0 20px 60px var(--shadow), 0 0 0 1px rgba(255,255,255,0.5) inset;
+            opacity: 0; animation: fadeUp 1.5s ease 0.6s forwards;
+            position: relative; overflow: hidden;
+        }
+        .timer-container::before {
+            content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
+            background: radial-gradient(circle, rgba(201,169,110,0.05) 0%, transparent 60%);
+            animation: rotate 30s linear infinite; pointer-events: none;
+        }
+        .timer-label { font-family: 'Cormorant Garamond', serif; font-size: 1.1rem; font-style: italic; color: var(--deep-rose); margin-bottom: 1.2rem; text-align: center; position: relative; z-index: 1; }
+        .timer-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.8rem; text-align: center; position: relative; z-index: 1; }
+        .timer-unit { position: relative; padding: 0.5rem; border-radius: 12px; background: rgba(255,255,255,0.3); transition: all 0.3s ease; }
+        .timer-unit:hover { background: rgba(201,169,110,0.1); transform: translateY(-3px); }
+        .timer-value { font-family: 'Cormorant Garamond', serif; font-size: clamp(1.6rem, 3.5vw, 2.5rem); font-weight: 600; color: var(--ink); line-height: 1; display: block; transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1); }
+        .timer-value.flip { transform: scale(1.15); color: var(--gold); }
+        .timer-name { font-size: 0.65rem; text-transform: uppercase; letter-spacing: 2px; color: var(--deep-rose); margin-top: 0.4rem; font-weight: 300; }
+        .timer-message { text-align: center; margin-top: 1.2rem; font-family: 'Cormorant Garamond', serif; font-style: italic; color: var(--deep-rose); font-size: 0.95rem; line-height: 1.5; position: relative; z-index: 1; }
+        .scroll-indicator { margin-top: 2rem; display: flex; flex-direction: column; align-items: center; gap: 0.5rem; opacity: 0; animation: fadeUp 1.5s ease 1.2s forwards; cursor: pointer; }
+        .scroll-indicator span { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 3px; color: var(--deep-rose); }
+        .scroll-line { width: 1px; height: 30px; background: linear-gradient(to bottom, var(--gold), transparent); animation: scrollPulse 2s ease-in-out infinite; }
+
+        /* ===== DIARY BOOK ===== */
+        .diary-section { min-height: auto; padding: 3rem 1rem 4rem; position: relative; z-index: 3; background: var(--paper); display: flex; flex-direction: column; align-items: center; justify-content: center; width: 100%; }
+        .section-title { font-family: 'Cormorant Garamond', serif; font-size: clamp(1.6rem, 3.5vw, 2.4rem); font-weight: 300; font-style: italic; text-align: center; margin-bottom: 2rem; color: var(--ink); position: relative; display: block; margin-left: auto; margin-right: auto; width: 100%; }
+        .section-title::after { content: ''; position: absolute; bottom: -8px; left: 50%; transform: translateX(-50%); width: 50px; height: 1px; background: var(--gold); }
+        .book-container { perspective: 1200px; width: 100%; max-width: 450px; height: 300px; position: relative; margin: 0 auto; }
+        .book { width: 100%; height: 100%; position: relative; transform-style: preserve-3d; }
+        .book-cover { position: absolute; width: 100%; height: 100%; background: linear-gradient(135deg, #3d322c 0%, #2c2420 100%); border-radius: 4px 12px 12px 4px; transform-origin: left center; transition: transform 1s cubic-bezier(0.4, 0, 0.2, 1); z-index: 3; display: flex; flex-direction: column; align-items: center; justify-content: center; box-shadow: inset -20px 0 50px rgba(0,0,0,0.3), 10px 10px 40px rgba(0,0,0,0.2); border: 2px solid rgba(201,169,110,0.3); backface-visibility: hidden; -webkit-backface-visibility: hidden; cursor: pointer; }
+        .book.open .book-cover { transform: rotateY(-140deg); }
+        .book-cover-title { font-family: 'Cormorant Garamond', serif; font-size: clamp(1.3rem, 2.5vw, 1.8rem); font-weight: 300; font-style: italic; color: var(--gold); text-align: center; padding: 0 1.5rem; margin-bottom: 0.8rem; }
+        .book-cover-line { width: 35px; height: 1px; background: var(--gold); margin: 0.4rem 0; }
+        .book-cover-sub { font-size: 0.7rem; color: rgba(201,169,110,0.7); text-transform: uppercase; letter-spacing: 2px; }
+        .book-inside { position: absolute; width: 100%; height: 100%; background: #fffef9; border-radius: 4px 12px 12px 4px; z-index: 2; padding: 2rem 1.5rem; display: flex; flex-direction: column; align-items: center; justify-content: center; box-shadow: 0 10px 40px rgba(0,0,0,0.1); border: 1px solid rgba(201,169,110,0.1); }
+        .book-inside h3 { font-family: 'Cormorant Garamond', serif; font-size: 1.3rem; font-weight: 400; font-style: italic; color: var(--ink); margin-bottom: 1rem; text-align: center; }
+        .book-inside p { font-size: 0.85rem; line-height: 1.7; color: var(--ink); text-align: center; font-weight: 300; }
+        .book-hint { margin-top: 1.5rem; font-size: 0.7rem; color: var(--deep-rose); text-transform: uppercase; letter-spacing: 2px; cursor: pointer; transition: color 0.3s; text-align: center; }
+        .book-hint:hover { color: var(--gold); }
+
+        /* ===== THOUGHTS ===== */
+        .thoughts-section { min-height: auto; padding: 3rem 1rem 4rem; position: relative; z-index: 3; background: linear-gradient(to bottom, var(--paper), #f5f0eb, var(--paper)); overflow: hidden; width: 100%; }
+        .thoughts-section::before { content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: radial-gradient(circle, rgba(201,169,110,0.03) 0%, transparent 70%); animation: rotate 60s linear infinite; }
+       .thought-card {
+            max-width: 650px;
+            margin: 1.5rem auto;
+            padding: 2rem 1.5rem;
+            background: rgba(255,255,255,0.7);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-radius: 20px;
+            border: 1px solid rgba(201,169,110,0.15);
+            position: relative;
+            opacity: 0;
+            transform: translateY(40px);
+            transition: opacity 0.8s ease, transform 0.8s ease; /* разделяем, чтобы не было лишних reflow */
+            width: 100%;
+            text-align: center;
+            left: 0;
+            right: 0;
+            
+            /* === ФИКС ВЫСОТЫ === */
+            min-height: 260px;           /* достаточно для 3 строк + автор + точки */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            contain: layout paint;       /* изолируем reflow внутри карточки */
+        }
+        .thought-card.visible { opacity: 1; transform: translateY(0); }
+        .thought-card::before { content: ''; position: absolute; top: -1px; left: 50%; transform: translateX(-50%); width: 50px; height: 3px; background: var(--gold); border-radius: 2px; }
+        .thought-text {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: clamp(1.1rem, 2.2vw, 1.5rem);
+            font-style: italic;
+            line-height: 1.6;
+            color: var(--ink);
+            margin-bottom: 1.2rem;
+            text-align: center;
+            
+            /* === ФИКС ВЫСОТЫ ТЕКСТА === */
+            min-height: 4.8em;           /* 3 строки × 1.6 line-height */
+            width: 100%;
+             transition: opacity 0.3s ease;
+        }
+
+        .thought-author {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            color: var(--deep-rose);
+            text-align: center;
+            transition: opacity 0.45s cubic-bezier(0.4, 0, 0.2, 1),
+                        transform 0.45s cubic-bezier(0.4, 0, 0.2, 1),
+                        filter 0.45s ease,
+                        letter-spacing 0.45s ease;
+            opacity: 1;
+            transform: translateY(0);
+            filter: blur(0);
+            min-height: 1.2em;        /* фикс высоты, чтобы не прыгало */
+            display: inline-block;
+        }
+        .thought-author.is-leaving {
+            opacity: 0;
+            transform: translateY(-12px);
+            filter: blur(6px);
+            letter-spacing: 6px;
+        }
+
+        /* Новый автор: прилетает снизу, тоже размыт, но в момент появления собирается */
+        .thought-author.is-entering {
+            opacity: 0;
+            transform: translateY(12px);
+            filter: blur(6px);
+            letter-spacing: 1px;
+        }
+        .thought-nav { display: flex; justify-content: center; gap: 0.8rem; margin-top: 1.5rem; position: relative; z-index: 2; }
+        .thought-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--gold); opacity: 0.3; cursor: pointer; transition: all 0.3s ease; }
+        .thought-dot.active { opacity: 1; transform: scale(1.3); }
+
+        /* ===== TIMELINE ===== */
+        .timeline-section { min-height: auto; padding: 3rem 1rem 4rem; position: relative; z-index: 3; background: var(--paper); display: flex; flex-direction: column; align-items: center; justify-content: center; width: 100%; }
+        .timeline { max-width: 550px; width: 100%; position: relative; padding: 1.5rem 0; }
+        .timeline-line { position: absolute; left: 50%; transform: translateX(-50%); width: 2px; height: 100%; background: linear-gradient(to bottom, transparent, var(--gold), var(--gold), transparent); top: 0; }
+        .timeline-item { display: flex; align-items: center; margin-bottom: 2rem; position: relative; opacity: 0; transform: translateY(30px); transition: all 0.8s ease; }
+        .timeline-item.visible { opacity: 1; transform: translateY(0); }
+        .timeline-item:nth-child(odd) { flex-direction: row-reverse; text-align: right; }
+        .timeline-item:nth-child(odd) .timeline-content { margin-right: 1.5rem; margin-left: 0; }
+        .timeline-item:nth-child(even) .timeline-content { margin-left: 1.5rem; }
+        .timeline-dot { width: 14px; height: 14px; border-radius: 50%; background: var(--gold); border: 3px solid var(--paper); box-shadow: 0 0 0 2px var(--gold), 0 0 20px rgba(201,169,110,0.4); position: absolute; left: 50%; transform: translateX(-50%); z-index: 2; flex-shrink: 0; }
+        .timeline-content { width: calc(50% - 1.5rem); background: rgba(255,255,255,0.8); backdrop-filter: blur(10px); padding: 1.2rem; border-radius: 14px; border: 1px solid rgba(201,169,110,0.15); box-shadow: 0 8px 30px rgba(0,0,0,0.05); transition: all 0.3s ease; }
+        .timeline-content:hover { transform: translateY(-3px); box-shadow: 0 12px 40px rgba(0,0,0,0.08); }
+        .timeline-date { font-family: 'Cormorant Garamond', serif; font-size: 1rem; font-style: italic; color: var(--gold); margin-bottom: 0.3rem; }
+        .timeline-title { font-size: 0.9rem; font-weight: 500; color: var(--ink); margin-bottom: 0.2rem; }
+        .timeline-desc { font-size: 0.75rem; color: var(--deep-rose); font-weight: 300; line-height: 1.5; }
+
+        /* ===== MOVIES ===== */
+        .movies-section { min-height: auto; padding: 3rem 1rem 4rem; position: relative; z-index: 3; background: linear-gradient(135deg, #2c2420 0%, #3d322c 50%, #2c2420 100%); display: flex; flex-direction: column; align-items: center; justify-content: center; width: 100%; overflow: hidden; }
+        .movies-section::before { content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: radial-gradient(circle at 20% 80%, rgba(201,169,110,0.1) 0%, transparent 40%), radial-gradient(circle at 80% 20%, rgba(212,165,165,0.08) 0%, transparent 40%); pointer-events: none; }
+        .movies-section .section-title { color: var(--gold); position: relative; z-index: 3; }
+        .movies-section .section-title::after { background: var(--gold); }
+        .movies-content { max-width: 700px; width: 100%; text-align: center; position: relative; z-index: 3; margin-top: 1.5rem; }
+        .movies-quote { font-family: 'Cormorant Garamond', serif; font-size: clamp(1.2rem, 2.8vw, 1.7rem); font-style: italic; line-height: 1.6; color: rgba(255,255,255,0.9); margin-bottom: 1.5rem; text-shadow: 0 2px 10px rgba(0,0,0,0.3); }
+        .movies-text { font-size: 0.9rem; line-height: 1.7; color: rgba(255,255,255,0.7); font-weight: 300; margin-bottom: 2rem; max-width: 550px; margin-left: auto; margin-right: auto; }
+        .movies-photos { display: flex; gap: 1.5rem; justify-content: center; align-items: center; flex-wrap: wrap; margin-top: 1rem; }
+        .movie-frame { position: relative; width: 100%; max-width: 280px; transition: transform 0.4s ease; }
+        .movie-frame:nth-child(1) { transform: rotate(-3deg); }
+        .photo-frame:nth-child(2) { transform: rotate(3deg); }
+        .photo-frame:nth-child(2) .photo-img img { object-position: center 20% !important; }
+        .movie-frame:hover { transform: translateY(-8px) scale(1.02) rotate(0deg); }
+        .movie-inner { background: rgba(255,255,255,0.95); padding: 10px 10px 45px 10px; box-shadow: 0 15px 40px rgba(0,0,0,0.3); position: relative; }
+        .movie-img { width: 100%; height: 190px; object-fit: cover; display: block; filter: sepia(20%) contrast(1.05); transition: filter 0.4s ease; }
+        .movie-frame:hover .movie-img { filter: sepia(0%) contrast(1.1); }
+        .movie-caption { position: absolute; bottom: 12px; left: 0; right: 0; text-align: center; font-family: 'Cormorant Garamond', serif; font-size: 0.9rem; font-style: italic; color: var(--ink); }
+        .movie-tape { position: absolute; top: -10px; left: 50%; transform: translateX(-50%) rotate(-2deg); width: 60px; height: 20px; background: rgba(255,255,255,0.4); backdrop-filter: blur(5px); box-shadow: 0 2px 8px rgba(0,0,0,0.2); z-index: 10; }
+        .movie-label { font-size: 0.65rem; text-transform: uppercase; letter-spacing: 2px; color: var(--gold); margin-top: 0.8rem; opacity: 0.8; }
+
+        /* ===== BIRTHDAY CAKE ===== */
+        .birthday-section { min-height: auto; padding: 3rem 1rem 4rem; position: relative; z-index: 3; background: linear-gradient(135deg, var(--birthday-pink) 0%, var(--paper) 50%, var(--birthday-gold) 100%); display: flex; flex-direction: column; align-items: center; justify-content: center; width: 100%; overflow: hidden; }
+        .birthday-section::before { content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: radial-gradient(circle at 30% 30%, rgba(201,169,110,0.15) 0%, transparent 40%), radial-gradient(circle at 70% 70%, rgba(212,165,165,0.15) 0%, transparent 40%); pointer-events: none; }
+        .birthday-cake { width: 160px; height: 160px; position: relative; margin-bottom: 2rem; cursor: pointer; transition: transform 0.3s ease; z-index: 3; }
+        .birthday-cake:hover { transform: scale(1.05); }
+        .cake-body {
+            width: 120px; height: 80px;
+            background: linear-gradient(to bottom, #f5e6d3, #e8d5c0);
+            border-radius: 10px 10px 20px 20px;
+            position: absolute; bottom: 15px; left: 50%;
+            transform: translateX(-50%);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        .cake-body::before {
+            content: ''; position: absolute; top: -25px; left: 0;
+            width: 100%; height: 25px;
+            background: linear-gradient(to bottom, #fff5f5, #f5e6e6);
+            border-radius: 50%;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+        .candle {
+            position: absolute; width: 8px; height: 35px;
+            background: linear-gradient(to right, #f0e0d0, #e8d5c0, #f0e0d0);
+            bottom: 95px; left: 50%;
+            transform: translateX(-50%);
+            border-radius: 2px;
+        }
+        .candle::before {
+            content: ''; position: absolute; top: -12px; left: 50%;
+            transform: translateX(-50%); width: 10px; height: 10px;
+            background: radial-gradient(circle, #ffeb3b 0%, #ff9800 50%, transparent 70%);
+            border-radius: 50%;
+            animation: flicker 0.5s ease-in-out infinite alternate;
+            box-shadow: 0 0 20px #ff9800, 0 0 40px #ffeb3b;
+        }
+        .candle.out::before { animation: none; opacity: 0; transition: opacity 1s ease; }
+        .candle.out::after {
+            content: ''; position: absolute; top: -15px; left: 50%;
+            transform: translateX(-50%); width: 20px; height: 20px;
+            background: radial-gradient(circle, rgba(200,200,200,0.3) 0%, transparent 70%);
+            border-radius: 50%;
+            animation: smoke 2s ease forwards;
+        }
+        @keyframes flicker {
+            0% { transform: translateX(-50%) scale(1); opacity: 1; }
+            100% { transform: translateX(-50%) scale(1.1) translateY(-2px); opacity: 0.9; }
+        }
+        @keyframes smoke {
+            0% { opacity: 0.6; transform: translateX(-50%) translateY(0) scale(1); }
+            100% { opacity: 0; transform: translateX(-50%) translateY(-30px) scale(2); }
+        }
+        .birthday-message { text-align: center; position: relative; z-index: 3; max-width: 550px; width: 100%; }
+        .birthday-message h2 { font-family: 'Cormorant Garamond', serif; font-size: clamp(1.6rem, 4vw, 2.6rem); font-weight: 300; font-style: italic; color: var(--ink); margin-bottom: 1rem; }
+        .birthday-message p { font-size: 0.9rem; line-height: 1.7; color: var(--ink); font-weight: 300; opacity: 0.8; }
+        .birthday-date { margin-top: 1.2rem; font-family: 'Cormorant Garamond', serif; font-size: 1.1rem; font-style: italic; color: var(--deep-rose); }
+        .wish-text { margin-top: 1.2rem; font-family: 'Cormorant Garamond', serif; font-size: 1rem; color: var(--deep-rose); font-style: italic; opacity: 0; transform: translateY(20px); transition: all 1s ease; }
+        .wish-text.show { opacity: 1; transform: translateY(0); }
+
+        /* ===== PHOTOS ===== */
+        .photo-section { min-height: auto; padding: 3rem 1rem 4rem; position: relative; z-index: 3; background: var(--paper); display: flex; flex-direction: column; align-items: center; justify-content: center; width: 100%; }
+        .photos-container { display: flex; gap: 1.5rem; align-items: center; justify-content: center; flex-wrap: wrap; max-width: 800px; width: 100%; margin: 0 auto; }
+        .photo-frame { position: relative; width: 100%; max-width: 260px; transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1); }
+        .photo-frame:hover { transform: translateY(-10px) rotate(0deg) !important; }
+        .photo-frame:nth-child(1) { transform: rotate(-3deg); }
+        .photo-frame:nth-child(2) { transform: rotate(3deg); }
+        .photo-inner { background: white; padding: 10px 10px 45px 10px; box-shadow: 0 15px 40px rgba(0,0,0,0.15); position: relative; overflow: hidden; }
+        .photo-inner::before { content: ''; position: absolute; top: 8px; left: 8px; right: 8px; bottom: 55px; border: 1px solid rgba(201,169,110,0.2); pointer-events: none; z-index: 2; }
+        .photo-img { width: 100%; height: 220px; background: linear-gradient(135deg, #f0e6e0, #e8ddd5); display: flex; align-items: center; justify-content: center; font-size: 2.5rem; position: relative; overflow: hidden; }
+        .photo-img img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s ease; }
+        .photo-frame:hover .photo-img img { transform: scale(1.05); }
+        .photo-caption { position: absolute; bottom: 15px; left: 0; right: 0; text-align: center; font-family: 'Cormorant Garamond', serif; font-size: 0.9rem; font-style: italic; color: var(--ink); }
+        .photo-tape { position: absolute; top: -10px; left: 50%; transform: translateX(-50%) rotate(-2deg); width: 60px; height: 20px; background: rgba(255,255,255,0.6); backdrop-filter: blur(5px); -webkit-backdrop-filter: blur(5px); box-shadow: 0 2px 8px rgba(0,0,0,0.1); z-index: 10; }
+
+        /* ===== LOVE EFFECTS ===== */
+        .love-effects { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 5; overflow: hidden; }
+        .love-particle { position: absolute; font-size: 1.2rem; animation: loveFloat 2s ease-out forwards; opacity: 0; }
+        @keyframes loveFloat { 0% { transform: translateY(0) scale(0.5); opacity: 1; } 100% { transform: translateY(-80px) scale(1.2); opacity: 0; } }
+
+        /* ===== FOOTER ===== */
+        footer { text-align: center; padding: 3rem 1rem; background: linear-gradient(to bottom, var(--paper), #f5f0eb); position: relative; z-index: 3; width: 100%; }
+        footer p { font-family: 'Cormorant Garamond', serif; font-size: 1.2rem; font-style: italic; color: var(--deep-rose); margin-bottom: 0.8rem; }
+        .heart-container { display: inline-flex; align-items: center; justify-content: center; position: relative; width: 50px; height: 50px; }
+        .heart-glow { position: absolute; width: 100%; height: 100%; background: radial-gradient(circle, rgba(212,165,165,0.4) 0%, transparent 70%); border-radius: 50%; animation: glowPulse 2s ease-in-out infinite; }
+        .heart-main { position: relative; z-index: 2; font-size: 1.8rem; color: var(--deep-rose); animation: heartbeat 1.5s ease-in-out infinite; filter: drop-shadow(0 0 8px rgba(212,165,165,0.5)); }
+        footer .from { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 3px; color: var(--gold); margin-top: 1.2rem; }
+
+        @keyframes fadeUp { to { opacity: 1; transform: translateY(0); } }
+        @keyframes scrollPulse { 0%, 100% { opacity: 1; transform: scaleY(1); } 50% { opacity: 0.5; transform: scaleY(0.7); } }
+        @keyframes heartbeat { 0%, 100% { transform: scale(1); filter: drop-shadow(0 0 8px rgba(212,165,165,0.5)); } 14% { transform: scale(1.2); filter: drop-shadow(0 0 15px rgba(212,165,165,0.8)); } 28% { transform: scale(1); filter: drop-shadow(0 0 8px rgba(212,165,165,0.5)); } 42% { transform: scale(1.2); filter: drop-shadow(0 0 15px rgba(212,165,165,0.8)); } }
+        @keyframes glowPulse { 0%, 100% { transform: scale(1); opacity: 0.6; } 50% { transform: scale(1.3); opacity: 0.3; } }
+        @keyframes rotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 768px) {
+            .timer-grid { grid-template-columns: repeat(2, 1fr); gap: 0.6rem; }
+            .book-container { max-width: 90vw; height: 280px; }
+            .photos-container { gap: 1.2rem; }
+            .photo-frame { max-width: 240px; }
+            .photo-frame:nth-child(1), .photo-frame:nth-child(2) { transform: rotate(0deg); }
+            .movies-photos { gap: 1.2rem; }
+            .movie-frame { max-width: 260px; }
+            .movie-frame:nth-child(1), .movie-frame:nth-child(2) { transform: rotate(0deg); }
+            .timeline-line { left: 20px; }
+            .timeline-item, .timeline-item:nth-child(odd) { flex-direction: row; text-align: left; }
+            .timeline-item:nth-child(odd) .timeline-content, .timeline-item:nth-child(even) .timeline-content { margin-left: 3rem; margin-right: 0; width: calc(100% - 4rem); }
+            .timeline-dot { left: 20px; transform: translateX(-50%); }
+            .music-btn { bottom: 16px; right: 16px; width: 40px; height: 40px; }
+        }
+        @media (max-width: 480px) {
+            .hero { padding: 1.2rem 0.75rem; }
+            .timer-container { padding: 1.2rem 1rem; }
+            .timer-value { font-size: 1.4rem; }
+            .book-container { height: 260px; }
+            .section-title { margin-bottom: 1.5rem; }
+        }
+
+    </style>
+<base target="_blank">
+</head>
+<body>
+    <!-- Noise Overlay -->
+    <div class="noise"></div>
+
+    <!-- Side Borders -->
+    <div class="side-border side-left"></div>
+    <div class="side-border side-right"></div>
+
+    <!-- Compliments Background -->
+    <div class="compliments-bg" id="complimentsBg"></div>
+
+    <!-- Confetti Canvas -->
+    <canvas id="confettiCanvas"></canvas>
+
+    <!-- Cursor Trails -->
+    <div id="trails"></div>
+
+    <!-- Floating Particles -->
+    <div class="particles-bg" id="particlesBg"></div>
+
+    <!-- Gradient Orbs -->
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+
+    <!-- ===== MUSIC BUTTON ===== -->
+    <button class="music-btn" id="musicBtn" title="Включить музыку">
+        <span id="musicIcon">&#9836;</span>
+    </button>
+
+    <!-- Local Audio Player -->
+    <audio id="audioPlayer" preload="auto" loop>
+        <source src="music.mp3" type="audio/mpeg">
+    </audio>
+
+    <!-- ===== HERO ===== -->
+    <section class="hero">
+        <div class="hero-content">
+            <h1>С днём рождения, любимая</h1>
+            <p class="subtitle">История, которую мы пишем вместе</p>
+            <div style="height: 1.8em; overflow: hidden; width: 100%;">
+                <div class="typing-text" id="typingText"></div>
+            </div>
+            <div class="timer-container">
+                <div class="timer-label">Мы вместе уже</div>
+                <div class="timer-grid">
+                    <div class="timer-unit"><span class="timer-value" id="days">0</span><div class="timer-name">дней</div></div>
+                    <div class="timer-unit"><span class="timer-value" id="hours">0</span><div class="timer-name">часов</div></div>
+                    <div class="timer-unit"><span class="timer-value" id="minutes">0</span><div class="timer-name">минут</div></div>
+                    <div class="timer-unit"><span class="timer-value" id="seconds">0</span><div class="timer-name">секунд</div></div>
+                </div>
+                <div class="timer-message">Каждая секунда с тобой — это маленькое чудо</div>
+            </div>
+        </div>
+        <div class="scroll-indicator" onclick="document.querySelector('.diary-section').scrollIntoView({behavior:'smooth'})">
+            <span>Открыть дневник</span>
+            <div class="scroll-line"></div>
+        </div>
+    </section>
+
+    <!-- ===== DIARY BOOK ===== -->
+    <section class="diary-section">
+        <h2 class="section-title">Наш дневник</h2>
+        <div class="book-container">
+            <div class="book" id="book">
+                <div class="book-cover" onclick="toggleBook()">
+                    <div class="book-cover-title">Дневник<br>памяти</div>
+                    <div class="book-cover-line"></div>
+                    <div class="book-cover-sub">Нажми, чтобы открыть</div>
+                </div>
+                <div class="book-inside">
+                    <h3>Наша первая страница</h3>
+                    <p>30 января 2026 года. Тот самый момент, когда всё изменилось. Каждая секунда с тобой — это подарок, который я ценю всё больше с каждым днём.</p>
+                    <p style="margin-top:1rem;font-style:italic;color:var(--deep-rose);font-size:0.8rem;">Спасибо тебе за все!</p>
+                </div>
+            </div>
+        </div>
+        <div class="book-hint" onclick="toggleBook()">&#8592; Нажми, чтобы закрыть</div>
+    </section>
+
+    <!-- ===== THOUGHTS ===== -->
+    <section class="thoughts-section">
+        <div style="width:100%;text-align:center;"><h2 class="section-title">О чём я думаю каждый день</h2></div>
+        <div class="thought-card" id="thoughtCard">
+            <div class="thought-text" id="thoughtText"></div>
+            <div class="thought-author" id="thoughtAuthor"></div>
+        </div>
+        <div class="thought-nav" id="thoughtNav"></div>
+    </section>
+
+    <!-- ===== TIMELINE ===== -->
+    <section class="timeline-section">
+        <h2 class="section-title">Наша история</h2>
+        <div class="timeline">
+            <div class="timeline-line"></div>
+            <div class="timeline-item">
+                <div class="timeline-dot"></div>
+                <div class="timeline-content">
+                    <div class="timeline-date">28 января 2026</div>
+                    <div class="timeline-title">Первая встреча</div>
+                    <div class="timeline-desc">Тот самый день, когда всё началось. Мы даже не подозревали, какая дорога ждёт нас впереди.</div>
+                </div>
+            </div>
+            <div class="timeline-item">
+                <div class="timeline-dot"></div>
+                <div class="timeline-content">
+                    <div class="timeline-date">29 января 2026</div>
+                    <div class="timeline-title">Первый поцелуй</div>
+                    <div class="timeline-desc">Момент, когда слова стали лишними, а сердце забилось чаще.</div>
+                </div>
+            </div>
+            <div class="timeline-item">
+                <div class="timeline-dot"></div>
+                <div class="timeline-content">
+                    <div class="timeline-date">30 января 2026</div>
+                    <div class="timeline-title">Первое "Я люблю тебя"</div>
+                    <div class="timeline-desc">Три слова, которые изменили всё. Сказанные искренне и навсегда.</div>
+                </div>
+            </div>
+            <div class="timeline-item">
+                <div class="timeline-dot"></div>
+                <div class="timeline-content">
+                    <div class="timeline-date">18 мая 2026</div>
+                    <div class="timeline-title">Твой день рождения</div>
+                    <div class="timeline-desc">Сегодня мы празднуем не просто дату, а то, что ты есть в моей жизни</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== MOVIES ===== -->
+    <section class="movies-section">
+        <h2 class="section-title">Наши любимые истории</h2>
+        <div class="movies-content">
+            <p class="movies-quote">"Сами знаете, трудности всегда будут. Это жизнь. Но вы решаете их вместе."</p>
+            <p class="movies-text">Как Ной и Элли — мы верим, что любовь способна преодолеть всё. А как Джон и Джейн — знаем, что самые крепкие чувства рождаются из искренности и страсти. Наша история вдохновлена лучшими моментами кино, но главный из них тот, в котором мы всегда выбираем друг друга — снова и снова.</p>
+            <div class="movies-photos">
+                <div class="movie-frame">
+                    <div class="movie-tape"></div>
+                    <div class="movie-inner">
+                        <img src="https://kimi-web-img.moonshot.cn/img/people.com/bf093f793996ab78c2dcfc185a1c94acf987a858.jpg" alt="Дневник памяти" class="movie-img" loading="lazy" decoding="async">
+                        <div class="movie-caption">Поцелуй под дождём</div>
+                    </div>
+                    <div class="movie-label">Дневник памяти</div>
+                </div>
+                <div class="movie-frame">
+                    <div class="movie-tape"></div>
+                    <div class="movie-inner">
+                        <img src="https://kimi-web-img.moonshot.cn/img/static.independent.co.uk/aa9e1997dbb445b4024865d6e4a3480b9e1ef2e1.jpg" alt="Мистер и миссис Смит" class="movie-img" loading="lazy" decoding="async">
+                        <div class="movie-caption">Тот самый вечер</div>
+                    </div>
+                    <div class="movie-label">Мистер и миссис Смит</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== BIRTHDAY CAKE ===== -->
+    <section class="birthday-section">
+        <div class="birthday-cake" id="birthdayCake" onclick="blowCandle()">
+            <div class="cake-body"></div>
+            <div class="candle" id="candle"></div>
+        </div>
+        <div class="birthday-message">
+            <h2>С днём рождения!</h2>
+            <p>18 мая — день, когда в этот мир пришла самая прекрасная девушка</p>
+            <div class="birthday-date">Загадай желание и задуй свечу...</div>
+            <div class="wish-text" id="wishText">Загадай желание и задуй свечу...</div>
+        </div>
+    </section>
+
+    <!-- ===== PHOTOS ===== -->
+    <section class="photo-section">
+        <h2 class="section-title">Наши моменты</h2>
+        <div class="photos-container">
+            <div class="photo-frame" onmouseenter="spawnLove(this)" onmouseleave="stopLove(this)" ontouchstart="spawnLove(this)">
+                <div class="photo-tape"></div>
+                <div class="photo-inner">
+                    <div class="photo-img"><img src="images/i1.jpg" alt="Любовь близко" loading="lazy" decoding="async"></div>
+                    <div class="love-effects"></div>
+                    <div class="photo-caption">Любовь близко</div>
+                </div>
+            </div>
+            <div class="photo-frame" onmouseenter="spawnLove(this)" onmouseleave="stopLove(this)">
+                <div class="photo-tape"></div>
+                <div class="photo-inner">
+                    <div class="photo-img"><img src="images/i2.jpg" alt="Счастье рядом" loading="lazy" decoding="async"></div>
+                    <div class="love-effects"></div>
+                    <div class="photo-caption">Счастье рядом</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== FOOTER ===== -->
+    <footer>
+        <p>С любовью, для самой особенной</p>
+        <div class="heart-container"><div class="heart-glow"></div><div class="heart-main">&#10084;</div></div>
+        <div class="from">Мухаммад</div>
+    </footer>
+
+    <script>
+
+        const complimentsData = [
+            { items: ["Ты прекрасна","Ты моя вселенная","Ты делаешь мир лучше","С тобой каждый день праздник","Ты невероятна","Я люблю тебя","Ты моё счастье","Ты особенная"], className: "compliment-row-1" },
+            { items: ["Ты свет моей жизни","С тобой хочу навсегда","Ты лучше всех","Я скучаю по тебе","Ты вдохновляешь меня","Ты моя муза"], className: "compliment-row-2" },
+            { items: ["Ты — чудо","Каждая секунда с тобой — дар","Ты моя родная душа","Люблю тебя всем сердцем","Ты невообразимо прекрасна"], className: "compliment-row-3" },
+            { items: ["Ты моё вдохновение","С тобой я дома","Ты самая красивая","Моя любовь безгранична","Ты — мой свет"], className: "compliment-row-4" },
+            { items: ["Ты неповторима","Я счастлив с тобой","Ты — мой подарок","Всё лучшее — с тобой"], className: "compliment-row-5" },
+            { items: ["Ты моя нежность","Ты — моя радость","Люблю тебя всё сильнее"], className: "compliment-row-6" },
+            { items: ["Ты моё счастье","С тобой время останавливается","Ты невероятна"], className: "compliment-row-7" },
+            { items: ["Ты — мой смысл","Я горжусь тобой","Ты прекрасна внутри и снаружи"], className: "compliment-row-8" },
+            { items: ["Ты мой дом","С тобой я лучше","Ты — моё всё"], className: "compliment-row-9" },
+            { items: ["Люблю тебя","Ты моя единственная","Ты — чудо"], className: "compliment-row-10" }
+        ];
+
+        const complimentsBg = document.getElementById('complimentsBg');
+        complimentsData.forEach(row => {
+            const rowDiv = document.createElement('div');
+            rowDiv.className = 'compliment-row ' + row.className;
+            
+            // Собираем одну «порцию» текста, чтобы понять примерную длину
+            const oneCycle = row.items.join(' ✦ ') + ' ✦ ';
+            // Нам нужно минимум 3 полных экрана ширины для плавности
+            const repeats = Math.max(12, Math.ceil(window.innerWidth * 4 / (oneCycle.length * 8)));
+            
+            for (let i = 0; i < repeats; i++) {
+                row.items.forEach((text) => {
+                    const span = document.createElement('span');
+                    span.className = 'compliment-text';
+                    span.textContent = text + ' \u2726 ';
+                    rowDiv.appendChild(span);
+                });
+            }
+            complimentsBg.appendChild(rowDiv);
+        });
+
+        // ===== MUSIC PLAYER =====
+        const musicBtn = document.getElementById('musicBtn');
+        const musicIcon = document.getElementById('musicIcon');
+        const audio = document.getElementById('audioPlayer');
+        let hasStarted = false;
+
+        function startMusic() {
+            if (hasStarted) return;
+            hasStarted = true;
+            
+            audio.volume = 0.5;
+            const promise = audio.play();
+            if (promise !== undefined) {
+                promise.then(() => {
+                    musicBtn.classList.add('playing');
+                    musicIcon.innerHTML = '&#9646;&#9646;';
+                    musicBtn.title = 'Выключить музыку';
+                }).catch(() => {
+                    hasStarted = false; // не вышло — попробуем ещё раз при следующем действии
+                });
+            }
+        }
+
+        // Пробуем сразу (сработает, только если пользователь раньше разрешил этому сайту звук)
+        window.addEventListener('DOMContentLoaded', startMusic);
+
+        // ВАЖНО: без setTimeout, напрямую в обработчике события
+        ['click', 'touchstart', 'keydown', 'scroll', 'focus'].forEach(evt => {
+            document.addEventListener(evt, startMusic, { once: true });
+        });
+
+        // Кнопка вручную
+        musicBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            if (audio.paused) {
+                startMusic();
+            } else {
+                audio.pause();
+                musicBtn.classList.remove('playing');
+                musicIcon.innerHTML = '&#9836;';
+                musicBtn.title = 'Включить музыку';
+                hasStarted = false;
+            }
+        });
+
+        // ===== FLOATING PARTICLES =====
+        const particlesBg = document.getElementById('particlesBg');
+        for (let i = 0; i < 30; i++) {
+            const particle = document.createElement('div');
+            particle.className = 'particle';
+            const size = Math.random() * 6 + 2;
+            particle.style.width = size + 'px';
+            particle.style.height = size + 'px';
+            particle.style.left = Math.random() * 100 + '%';
+            particle.style.animationDuration = (Math.random() * 15 + 10) + 's';
+            particle.style.animationDelay = (Math.random() * 10) + 's';
+            particlesBg.appendChild(particle);
+        }
+
+        // ===== TYPING EFFECT =====
+        const typingText = document.getElementById('typingText');
+        const phrases = [
+            'Ты — мой самый прекрасный сюрприз',
+            'С тобой каждый день — как праздник',
+            'Я люблю тебя больше, чем вчера',
+            'Ты — моё всё'
+        ];
+        let phraseIndex = 0, charIndex = 0, isDeleting = false;
+        
+        function typeEffect() {
+            const current = phrases[phraseIndex];
+            if (isDeleting) {
+                typingText.textContent = current.substring(0, charIndex - 1);
+                charIndex--;
+            } else {
+                typingText.textContent = current.substring(0, charIndex + 1);
+                charIndex++;
+            }
+            let typeSpeed = isDeleting ? 50 : 100;
+            if (!isDeleting && charIndex === current.length) {
+                typeSpeed = 2000; isDeleting = true;
+            } else if (isDeleting && charIndex === 0) {
+                isDeleting = false; phraseIndex = (phraseIndex + 1) % phrases.length; typeSpeed = 500;
+            }
+            setTimeout(typeEffect, typeSpeed);
+        }
+        
+        setTimeout(typeEffect, 1500);
+
+        // ===== CONFETTI =====
+        const confettiCanvas = document.getElementById('confettiCanvas');
+        const cCtx = confettiCanvas.getContext('2d');
+        let confettiParticles = [];
+        function resizeConfetti() { confettiCanvas.width = window.innerWidth; confettiCanvas.height = window.innerHeight; }
+        resizeConfetti(); window.addEventListener('resize', resizeConfetti);
+        const colors = ['#c9a96e', '#d4a5a5', '#b08080', '#f8e8e8', '#e8d5a3', '#fff5f5'];
+
+        class Confetti {
+            constructor(x, y) {
+                this.x = x || Math.random() * confettiCanvas.width;
+                this.y = y || -20;
+                this.size = Math.random() * 8 + 4;
+                this.speedY = Math.random() * 3 + 2;
+                this.speedX = Math.random() * 2 - 1;
+                this.color = colors[Math.floor(Math.random() * colors.length)];
+                this.rotation = Math.random() * 360;
+                this.rotationSpeed = Math.random() * 4 - 2;
+                this.opacity = 1;
+            }
+            update() {
+                this.y += this.speedY; this.x += this.speedX; this.rotation += this.rotationSpeed;
+                if (this.y > confettiCanvas.height) this.opacity -= 0.02;
+            }
+            draw() {
+                cCtx.save();
+                cCtx.translate(this.x, this.y);
+                cCtx.rotate(this.rotation * Math.PI / 180);
+                cCtx.globalAlpha = this.opacity;
+                cCtx.fillStyle = this.color;
+                cCtx.fillRect(-this.size/2, -this.size/2, this.size, this.size);
+                cCtx.restore();
+            }
+        }
+
+        for (let i = 0; i < 150; i++) confettiParticles.push(new Confetti());
+        let confettiActive = true, confettiFrame = 0;
+        function animateConfetti() {
+            cCtx.clearRect(0, 0, confettiCanvas.width, confettiCanvas.height);
+            if (confettiActive) {
+                confettiParticles.forEach(p => { p.update(); p.draw(); });
+                confettiFrame++;
+                if (confettiFrame > 480) confettiActive = false;
+            } else {
+                let anyVisible = false;
+                confettiParticles.forEach(p => {
+                    if (p.opacity > 0) { p.opacity -= 0.02; p.y += p.speedY; p.draw(); anyVisible = true; }
+                });
+                if (!anyVisible) { requestAnimationFrame(animateConfetti); return; }
+            }
+            requestAnimationFrame(animateConfetti);
+        }
+        animateConfetti();
+
+        // ===== TIMER =====
+        const startDate = new Date('2026-01-30T19:00:00+03:00');
+        let prevValues = { days: -1, hours: -1, minutes: -1, seconds: -1 };
+        function updateTimer() {
+            const now = new Date(), diff = now - startDate;
+            const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+            const values = { days, hours, minutes, seconds };
+            Object.keys(values).forEach(key => {
+                const el = document.getElementById(key);
+                if (values[key] !== prevValues[key]) {
+                    el.classList.add('flip');
+                    el.textContent = values[key].toString().padStart(key === 'days' ? 1 : 2, '0');
+                    setTimeout(() => el.classList.remove('flip'), 300);
+                }
+            });
+            prevValues = values;
+            requestAnimationFrame(updateTimer);
+        }
+        updateTimer();
+
+        // ===== BOOK =====
+        const book = document.getElementById('book');
+        let bookOpen = false;
+        function toggleBook() {
+            bookOpen = !bookOpen;
+            if (bookOpen) book.classList.add('open');
+            else book.classList.remove('open');
+        }
+
+        // ===== THOUGHTS =====
+        const thoughts = [
+            { text: "Просыпаюсь и первое, что приходит в голову — твоя улыбка. Это лучшее начало любого дня.", author: "Каждое утро" },
+            { text: "Иногда ловлю себя на мысли, что просто смотрю в окно и думаю о том, как ты смеёшься. Этот звук — моя любимая мелодия.", author: "Тихие минуты" },
+            { text: "Помню наш разговор до рассвета. Каждое слово, каждую паузу. Хочу, чтобы таких моментов было бесконечно много.", author: "Ночные разговоры" },
+            { text: "Ты делаешь обычные вещи волшебными. Простая прогулка, чашка кофе, дождь за окном — всё становится особенным, когда ты рядом.", author: "Маленькие чудеса" },
+            { text: "Я не верил, что можно так сильно скучать по человеку, с которым виделся всего пару часов назад. Но с тобой — именно так.", author: "Каждое расставание" },
+            { text: "Мечтаю о нашем будущем. О том, как мы будем вспоминать эти дни и улыбаться. Потому что лучшее ещё впереди.", author: "Вперёд" }
+        ];
+        let currentThought = 0;
+        const thoughtText = document.getElementById('thoughtText');
+        const thoughtAuthor = document.getElementById('thoughtAuthor');
+        const thoughtNav = document.getElementById('thoughtNav');
+        const thoughtCard = document.getElementById('thoughtCard');
+
+        thoughts.forEach((_, i) => {
+            const dot = document.createElement('div');
+            dot.className = 'thought-dot' + (i === 0 ? ' active' : '');
+            dot.onclick = () => showThought(i);
+            thoughtNav.appendChild(dot);
+        });
+
+        function typeWriter(text, element, speed = 45) {
+            element.textContent = '';
+            let i = 0;
+            function type() {
+                if (i < text.length) { element.textContent += text.charAt(i); i++; setTimeout(type, speed); }
+            }
+            type();
+        }
+
+        function showThought(index) {
+            currentThought = index;
+
+            // переключаем точки
+            document.querySelectorAll('.thought-dot').forEach((dot, i) => {
+                dot.classList.toggle('active', i === index);
+            });
+
+            // --- анимация автора ---
+            thoughtAuthor.classList.add('is-leaving');
+
+            // основной текст просто мягко мелькает (без движения карточки)
+            thoughtText.style.transition = 'opacity 0.35s ease';
+            thoughtText.style.opacity = '0';
+
+            setTimeout(() => {
+                // меняем содержимое в "слепой" зоне, когда старый автор невидим
+                thoughtAuthor.textContent = thoughts[index].author;
+                thoughtAuthor.classList.remove('is-leaving');
+                thoughtAuthor.classList.add('is-entering');
+
+                // запускаем печать новой мысли
+                typeWriter(thoughts[index].text, thoughtText, 35);
+                thoughtText.style.opacity = '1';
+
+                // форсируем reflow и запускаем появление нового автора
+                requestAnimationFrame(() => {
+                    requestAnimationFrame(() => {
+                        thoughtAuthor.classList.remove('is-entering');
+                    });
+                });
+            }, 450); // чуть дольше, чем transition в CSS
+        }
+        setInterval(() => showThought((currentThought + 1) % thoughts.length), 7000);
+        showThought(0);
+
+        const thoughtObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('visible'); });
+        }, { threshold: 0.3 });
+        thoughtObserver.observe(thoughtCard);
+
+        // ===== TIMELINE =====
+        const timelineItems = document.querySelectorAll('.timeline-item');
+        const timelineObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('visible'); });
+        }, { threshold: 0.2, rootMargin: '0px 0px -30px 0px' });
+        timelineItems.forEach(item => timelineObserver.observe(item));
+
+        // ===== BIRTHDAY CANDLE =====
+        let candleBlown = false;
+        function blowCandle() {
+            if (candleBlown) return;
+            candleBlown = true;
+            document.getElementById('candle').classList.add('out');
+            setTimeout(() => {
+                document.getElementById('wishText').textContent = "Желание загадано... Пусть всё сбудется!";
+                document.getElementById('wishText').classList.add('show');
+            }, 1000);
+            for (let i = 0; i < 80; i++) {
+                const p = new Confetti(confettiCanvas.width / 2 + (Math.random() - 0.5) * 300, confettiCanvas.height / 2 + (Math.random() - 0.5) * 100);
+                p.speedY = -Math.random() * 8 - 3;
+                p.speedX = (Math.random() - 0.5) * 6;
+                confettiParticles.push(p);
+            }
+            confettiActive = true; confettiFrame = 0;
+        }
+
+        // ===== LOVE EFFECTS ON PHOTOS =====
+        const loveSymbols = ['\uD83D\uDC8B', '\u2764', '\uD83D\uDC95', '\uD83D\uDC96', '\uD83D\uDC97', '\uD83D\uDC93'];
+        let loveIntervals = new Map();
+
+        function spawnLove(frame) {
+            const container = frame.querySelector('.love-effects');
+            if (!container) return;
+
+            function createParticle() {
+                const particle = document.createElement('div');
+                particle.className = 'love-particle';
+                particle.textContent = loveSymbols[Math.floor(Math.random() * loveSymbols.length)];
+                particle.style.left = (20 + Math.random() * 60) + '%';
+                particle.style.bottom = (20 + Math.random() * 40) + '%';
+                particle.style.animationDelay = (Math.random() * 0.5) + 's';
+                particle.style.fontSize = (0.8 + Math.random() * 0.8) + 'rem';
+                container.appendChild(particle);
+                setTimeout(() => particle.remove(), 2000);
+            }
+
+            createParticle();
+            const interval = setInterval(createParticle, 400);
+            loveIntervals.set(frame, interval);
+        }
+
+        function stopLove(frame) {
+            const interval = loveIntervals.get(frame);
+            if (interval) { clearInterval(interval); loveIntervals.delete(frame); }
+            const container = frame.querySelector('.love-effects');
+            if (container) container.innerHTML = '';
+        }
+
+        // ===== CURSOR TRAIL =====
+        const trailsContainer = document.getElementById('trails');
+        const trailCount = 10;
+        const trails = [];
+        for (let i = 0; i < trailCount; i++) {
+            const trail = document.createElement('div');
+            trail.className = 'trail';
+            trail.style.width = (7 - i * 0.5) + 'px';
+            trail.style.height = (7 - i * 0.5) + 'px';
+            trailsContainer.appendChild(trail);
+            trails.push({ el: trail, x: 0, y: 0 });
+        }
+        let mouseX = 0, mouseY = 0;
+        document.addEventListener('mousemove', (e) => { mouseX = e.clientX; mouseY = e.clientY; });
+        function animateTrails() {
+            trails.forEach((trail, index) => {
+                trail.x += (mouseX - trail.x) * (0.12 - index * 0.008);
+                trail.y += (mouseY - trail.y) * (0.12 - index * 0.008);
+                trail.el.style.left = trail.x + 'px';
+                trail.el.style.top = trail.y + 'px';
+                trail.el.style.opacity = 1 - (index / trailCount);
+            });
+            requestAnimationFrame(animateTrails);
+        }
+        animateTrails();
+
+        // ===== SCROLL ANIMATIONS =====
+        const scrollObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+
+        document.querySelectorAll('.timer-container, .section-title, .book-container, .photos-container, .movies-content').forEach(el => {
+            el.style.opacity = '0';
+            el.style.transform = 'translateY(30px)';
+            el.style.transition = 'all 0.8s ease';
+            scrollObserver.observe(el);
+        });
+        // ===== DISTRIBUTE COMPLIMENTS INTO SECTIONS =====
+        (function() {
+            const originalBg = document.getElementById('complimentsBg');
+            if (!originalBg) return;
+            
+            const sections = document.querySelectorAll('section');
+            if (sections.length === 0) return;
+            
+            sections.forEach((section, idx) => {
+                // Первую секцию заполняем оригиналом, остальные — клонами
+                const bg = idx === 0 ? originalBg : originalBg.cloneNode(true);
+                if (idx !== 0) bg.removeAttribute('id');
+                
+                // Сбрасываем глобальные стили, которые мешали раньше
+                bg.style.position = 'absolute';
+                bg.style.top = '0';
+                bg.style.left = '0';
+                bg.style.width = '100%';
+                bg.style.height = '100%';
+                bg.style.zIndex = '0';
+                bg.style.opacity = '0,1';
+                bg.style.mixBlendMode = 'normal';
+                
+                // Гарантируем, что секция может держать абсолютный фон
+                section.style.position = 'relative';
+                section.style.overflow = 'hidden';
+                
+                // Вставляем ПЕРЕД всем контентом секции
+                section.insertBefore(bg, section.firstChild);
+            });
+        })();
+    </script>
+</body>
+</html>
