@@ -980,7 +980,7 @@
                 thoughtText.style.opacity = '1';
 
                 // форсируем reflow и запускаем появление нового автора
-                requestAnimationFrame(() => {ы
+                requestAnimationFrame(() => {
                     requestAnimationFrame(() => {
                         thoughtAuthor.classList.remove('is-entering');
                     });
@@ -1131,14 +1131,6 @@
                 section.insertBefore(bg, section.firstChild);
             });
         })();
-        document.querySelectorAll('.movie-frame').forEach(frame => {
-        frame.addEventListener('touchstart', () => {
-        frame.style.transform = 'translateY(-8px) scale(1.02) rotate(0deg)';
-            });
-            frame.addEventListener('touchend', () => {
-                frame.style.transform = '';
-            });
-        });
     </script>
 </body>
 </html>
