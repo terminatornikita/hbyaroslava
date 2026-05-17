@@ -361,25 +361,23 @@
             position: relative;
             width: 100%;
             max-width: 280px;
-            transition: transform 0.4s ease;
-            cursor: pointer;  /* показываем, что кликабельно */
+            transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
-
 
         /* Повороты как у фоторамок */
         .movie-frame:nth-child(1) { transform: rotate(-3deg); }
         .movie-frame:nth-child(2) { transform: rotate(3deg); }
 
-        /* Hover — тот же эффект, что и у фото */
+        /* Hover — плавный подъём + выравнивание */
         .movie-frame:hover {
-            transform: translateY(-8px) scale(1.02) rotate(0deg);
+            transform: translateY(-10px) rotate(0deg) !important;
         }
 
-        /* На тач-устройствах: при нажатии (active) тот же эффект */
+        /* На тач-устройствах: при нажатии тот же плавный эффект */
         @media (hover: none) and (pointer: coarse) {
             .movie-frame:active {
-                transform: translateY(-8px) scale(1.02) rotate(0deg);
-                transition: transform 0.2s ease;
+                transform: translateY(-10px) rotate(0deg) !important;
+                transition: transform 0.3s ease;
             }
         }
                 .movie-inner { background: rgba(255,255,255,0.95); padding: 10px 10px 45px 10px; box-shadow: 0 15px 40px rgba(0,0,0,0.3); position: relative; }
@@ -504,11 +502,8 @@
             .book-container { height: 260px; }
             .section-title { margin-bottom: 1.5rem; }
         }
-        .movie-frame.is-pressed {
-            transform: translateY(-8px) scale(1.02) rotate(0deg);
-            transition: transform 0.2s ease;
-        }
     </style>
+
 <base target="_blank">
 </head>
 <body>
@@ -648,7 +643,7 @@
             <p class="movies-quote">"Сами знаете, трудности всегда будут. Это жизнь. Но вы решаете их вместе."</p>
             <p class="movies-text">Как Ной и Элли — мы верим, что любовь способна преодолеть всё. А как Джон и Джейн — знаем, что самые крепкие чувства рождаются из искренности и страсти. Наша история вдохновлена лучшими моментами кино, но главный из них тот, в котором мы всегда выбираем друг друга — снова и снова.</p>
             <div class="movies-photos">
-                <div class="movie-frame" ontouchstart="this.classList.add('is-pressed')" ontouchend="this.classList.remove('is-pressed')">
+                <div class="movie-frame">
                     <div class="movie-tape"></div>
                     <div class="movie-inner">
                         <img src="https://kimi-web-img.moonshot.cn/img/people.com/bf093f793996ab78c2dcfc185a1c94acf987a858.jpg" alt="Дневник памяти" class="movie-img" loading="lazy" decoding="async">
@@ -656,7 +651,7 @@
                     </div>
                     <div class="movie-label">Дневник памяти</div>
                 </div>
-                <div class="movie-frame" ontouchstart="this.classList.add('is-pressed')" ontouchend="this.classList.remove('is-pressed')">
+                <div class="movie-frame">
                     <div class="movie-tape"></div>
                     <div class="movie-inner">
                         <img src="https://kimi-web-img.moonshot.cn/img/static.independent.co.uk/aa9e1997dbb445b4024865d6e4a3480b9e1ef2e1.jpg" alt="Мистер и миссис Смит" class="movie-img" loading="lazy" decoding="async">
