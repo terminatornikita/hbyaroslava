@@ -357,12 +357,31 @@
         .movies-quote { font-family: 'Cormorant Garamond', serif; font-size: clamp(1.2rem, 2.8vw, 1.7rem); font-style: italic; line-height: 1.6; color: rgba(255,255,255,0.9); margin-bottom: 1.5rem; text-shadow: 0 2px 10px rgba(0,0,0,0.3); }
         .movies-text { font-size: 0.9rem; line-height: 1.7; color: rgba(255,255,255,0.7); font-weight: 300; margin-bottom: 2rem; max-width: 550px; margin-left: auto; margin-right: auto; }
         .movies-photos { display: flex; gap: 1.5rem; justify-content: center; align-items: center; flex-wrap: wrap; margin-top: 1rem; }
-        .movie-frame { position: relative; width: 100%; max-width: 280px; transition: transform 0.4s ease; }
+        .movie-frame {
+            position: relative;
+            width: 100%;
+            max-width: 280px;
+            transition: transform 0.4s ease;
+            cursor: pointer;  /* показываем, что кликабельно */
+        }
+
+        /* Повороты как у фоторамок */
         .movie-frame:nth-child(1) { transform: rotate(-3deg); }
-        .photo-frame:nth-child(2) { transform: rotate(3deg); }
-        .photo-frame:nth-child(2) .photo-img img { object-position: center 20% !important; }
-        .movie-frame:hover { transform: translateY(-8px) scale(1.02) rotate(0deg); }
-        .movie-inner { background: rgba(255,255,255,0.95); padding: 10px 10px 45px 10px; box-shadow: 0 15px 40px rgba(0,0,0,0.3); position: relative; }
+        .movie-frame:nth-child(2) { transform: rotate(3deg); }
+
+        /* Hover — тот же эффект, что и у фото */
+        .movie-frame:hover {
+            transform: translateY(-8px) scale(1.02) rotate(0deg);
+        }
+
+        /* На тач-устройствах: при нажатии (active) тот же эффект */
+        @media (hover: none) and (pointer: coarse) {
+            .movie-frame:active {
+                transform: translateY(-8px) scale(1.02) rotate(0deg);
+                transition: transform 0.2s ease;
+            }
+        }
+                .movie-inner { background: rgba(255,255,255,0.95); padding: 10px 10px 45px 10px; box-shadow: 0 15px 40px rgba(0,0,0,0.3); position: relative; }
         .movie-img { width: 100%; height: 190px; object-fit: cover; display: block; filter: sepia(20%) contrast(1.05); transition: filter 0.4s ease; }
         .movie-frame:hover .movie-img { filter: sepia(0%) contrast(1.1); }
         .movie-caption { position: absolute; bottom: 12px; left: 0; right: 0; text-align: center; font-family: 'Cormorant Garamond', serif; font-size: 0.9rem; font-style: italic; color: var(--ink); }
@@ -663,7 +682,7 @@
     <section class="photo-section">
         <h2 class="section-title">Наши моменты</h2>
         <div class="photos-container">
-            <div class="photo-frame" onmouseenter="spawnLove(this)" onmouseleave="stopLove(this)" ontouchstart="spawnLove(this)">
+            <div class="photo-frame" onmouseenter="spawnLove(this)"  onmouseleave="stopLove(this)" ontouchstart="spawnLove(this)" ontouchend="stopLove(this)">
                 <div class="photo-tape"></div>
                 <div class="photo-inner">
                     <div class="photo-img"><img src="images/i1.jpg" alt="Любовь близко" loading="lazy" decoding="async"></div>
@@ -957,7 +976,7 @@
                 thoughtText.style.opacity = '1';
 
                 // форсируем reflow и запускаем появление нового автора
-                requestAnimationFrame(() => {
+                requestAnimationFrame(() => {ы
                     requestAnimationFrame(() => {
                         thoughtAuthor.classList.remove('is-entering');
                     });
@@ -1006,6 +1025,10 @@
             const container = frame.querySelector('.love-effects');
             if (!container) return;
 
+            // Очищаем предыдущий интервал, если есть (на случай повторного тапа)
+            const oldInterval = loveIntervals.get(frame);
+            if (oldInterval) clearInterval(oldInterval);
+
             function createParticle() {
                 const particle = document.createElement('div');
                 particle.className = 'love-particle';
@@ -1026,10 +1049,11 @@
         function stopLove(frame) {
             const interval = loveIntervals.get(frame);
             if (interval) { clearInterval(interval); loveIntervals.delete(frame); }
+            
             const container = frame.querySelector('.love-effects');
             if (container) container.innerHTML = '';
         }
-
+        
         // ===== CURSOR TRAIL =====
         const trailsContainer = document.getElementById('trails');
         const trailCount = 10;
